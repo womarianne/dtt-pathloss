@@ -1,0 +1,9 @@
+Approche,Model,N*_ancien,RMSE_ancien,N*_propre,RMSE_propre,Biais_optimiste
+A1,RF,15,4.773,3,5.19,0.417
+A1,XGBoost,16,4.678,4,5.002,0.324
+A1,CatBoost,7,4.587,3,5.277,0.69
+A1,LightGBM,7,4.749,13,4.952,0.203
+A2,RF,17,4.637,3,5.233,0.596
+A2,XGBoost,17,4.56,5,5.054,0.494
+A2,CatBoost,19,4.645,5,4.738,0.093
+A2,LightGBM,7,4.868,7,4.868,0.0

@@ -1,0 +1,5 @@
+model,N_argmin,ratio_argmin,gen_argmin,RMSE_argmin,seuil_1SE,n_candidats,N*,ratio*,gen*,RMSE_retenu,N*_nb07
+RF,5,1,SMOTE-R,5.4191,5.5818,84,5,0,aucun,5.4815,4
+XGBoost,5,5,SMOTE-R,5.5039,5.6522,67,6,0,aucun,5.6274,5
+CatBoost,14,5,GEO-interp,5.2364,5.3933,39,5,0,aucun,5.3756,4
+LightGBM,19,1,GEO-interp,5.3783,5.5731,29,5,0,aucun,5.5017,5

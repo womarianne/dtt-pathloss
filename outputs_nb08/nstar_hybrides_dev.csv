@@ -1,0 +1,5 @@
+Model,PureML_N*_filtered,PureML_RMSE_dev,A1_N*,A1_RMSE_dev,A2_N*,A2_RMSE_dev,PureML_N*_full_dev
+RF,5,5.4711,3,5.5479,3,5.6233,4
+XGBoost,5,5.6717,4,5.7483,5,5.6979,5
+CatBoost,5,5.538,3,5.5843,5,5.558,4
+LightGBM,5,5.5486,13,5.4842,7,5.6798,5

@@ -1,0 +1,8 @@
+Famille,Modèle,N,RMSE,MAE,R2,Bias,R2_Urbain,R2_Suburbain
+Uncalibrated empirical,ITU-R P.1546-6,—,13.639,11.732,-0.877,-8.872,-1.352,-10.06
+Calibrated empirical,Hata L2 (OLS),7,6.998,5.368,0.506,-0.103,0.049,0.003
+Pure ML,RF,5,4.776,4.018,0.77,0.417,0.592,0.332
+Hybrid A1,A1-LightGBM,13,4.952,4.142,0.753,0.106,0.574,0.21
+Hybrid A2,A2-CatBoost,5,4.738,3.993,0.773,0.481,0.595,0.364
+Trivial baseline,Global mean (Dev),0,9.956,8.858,-0.0,-0.131,-0.389,-4.113
+Trivial baseline,Mean by city (Dev),0,7.19,5.74,0.478,-0.341,-0.011,-0.014

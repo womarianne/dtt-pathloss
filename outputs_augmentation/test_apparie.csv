@@ -1,0 +1,5 @@
+model,ΔRMSE,IC_lo,IC_hi,P(retenu meilleur),Wilcoxon_p
+RF,-0.17,-0.363,0.029,0.952,0.3022
+XGBoost,-0.103,-0.306,0.093,0.86,0.1444
+CatBoost,-0.378,-0.663,-0.059,0.993,0.1245
+LightGBM,0.0,0.0,0.0,0.0,1.0

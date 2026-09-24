@@ -1,0 +1,11 @@
+\begin{tabular}{llllll}
+\toprule
+Family & Model & RMSE (dB) [95\% CI] & MAE (dB) [95\% CI] & R2 [95\% CI] & Bias (dB) \\
+\midrule
+Uncalibrated empirical & ITU-R P.1546-6 & 13.64 [12.05, 15.15] & 11.73 [10.06, 13.51] & -0.877 [-1.661, -0.410] & -8.87 \\
+Uncalibrated empirical & Hata standard & 17.81 [14.64, 20.70] & 13.76 [11.05, 16.66] & -2.201 [-3.511, -1.306] & 13.54 \\
+Calibrated empirical & Hata L2 (OLS) & 7.00 [5.58, 8.46] & 5.37 [4.32, 6.59] & 0.506 [0.256, 0.678] & -0.10 \\
+Pure ML & ML RF & 4.78 [4.11, 5.45] & 4.02 [3.41, 4.71] & 0.770 [0.663, 0.835] & 0.42 \\
+Hybrid A2 & A2-CatBoost & 4.74 [4.02, 5.46] & 3.99 [3.38, 4.70] & 0.773 [0.661, 0.843] & 0.48 \\
+\bottomrule
+\end{tabular}

@@ -1,0 +1,11 @@
+Family,Model,N,RMSE (dB),MAE (dB),R2,Bias (dB)
+Uncalibrated empirical,ITU-R P.1546-6,—,13.64,11.73,-0.877,-8.87
+Uncalibrated empirical,Hata standard,—,17.81,13.76,-2.201,13.54
+Calibrated empirical,Hata L1a (global offset),1,11.57,9.73,-0.351,0.16
+Calibrated empirical,Hata L1b (offset/env),2,9.93,7.8,0.005,-0.02
+Calibrated empirical,Hata L2 (OLS),7,7.0,5.37,0.506,-0.1
+Pure ML,RF,5,4.78,4.02,0.77,0.42
+Pure ML,CatBoost,5,4.83,4.02,0.765,0.58
+Pure ML,LightGBM,5,4.88,4.03,0.76,0.3
+Pure ML,XGBoost,5,5.11,4.02,0.737,0.55
+Hybride (Strict (14)),A2-CatBoost,5,4.74,3.99,0.773,0.48

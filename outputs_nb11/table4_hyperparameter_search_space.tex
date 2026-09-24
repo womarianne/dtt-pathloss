@@ -1,0 +1,36 @@
+\begin{tabular}{lrlll}
+\toprule
+Model & Trials & Hyperparameter & Type & Range \\
+\midrule
+RF & 150 & n\_estimators & integer & [200, 1000] \\
+RF & 150 & max\_depth & integer & [3, 20] \\
+RF & 150 & min\_samples\_leaf & integer & [1, 20] \\
+RF & 150 & min\_samples\_split & integer & [2, 20] \\
+RF & 150 & max\_features & categorical & \{sqrt, log2, 0.3, 0.5, 0.7\} \\
+RF & 150 & bootstrap & categorical & \{True, False\} \\
+RF & 150 & max\_samples (if bootstrap) & real & [0.5, 1.0] \\
+XGBoost & 150 & n\_estimators & integer & [200, 1000] \\
+XGBoost & 150 & max\_depth & integer & [2, 10] \\
+XGBoost & 150 & learning\_rate & real (log) & [1e-3, 0.3] \\
+XGBoost & 150 & subsample & real & [0.5, 1.0] \\
+XGBoost & 150 & colsample\_bytree & real & [0.5, 1.0] \\
+XGBoost & 150 & reg\_alpha & real (log) & [1e-8, 100] \\
+XGBoost & 150 & reg\_lambda & real (log) & [1e-8, 100] \\
+XGBoost & 150 & min\_child\_weight & integer & [1, 10] \\
+CatBoost & 150 & iterations & integer & [200, 1000] \\
+CatBoost & 150 & depth & integer & [3, 8] \\
+CatBoost & 150 & learning\_rate & real (log) & [1e-3, 0.3] \\
+CatBoost & 150 & l2\_leaf\_reg & real (log) & [1e-2, 10] \\
+CatBoost & 150 & bagging\_temperature & real & [0.0, 1.0] \\
+CatBoost & 150 & border\_count & integer & [32, 255] \\
+LightGBM & 150 & n\_estimators & integer & [200, 1000] \\
+LightGBM & 150 & num\_leaves & integer & [15, 127] \\
+LightGBM & 150 & max\_depth & integer & [3, 12] \\
+LightGBM & 150 & learning\_rate & real (log) & [1e-3, 0.3] \\
+LightGBM & 150 & min\_child\_samples & integer & [5, 50] \\
+LightGBM & 150 & subsample & real & [0.5, 1.0] \\
+LightGBM & 150 & colsample\_bytree & real & [0.5, 1.0] \\
+LightGBM & 150 & reg\_alpha & real (log) & [1e-8, 10] \\
+LightGBM & 150 & reg\_lambda & real (log) & [1e-8, 10] \\
+\bottomrule
+\end{tabular}

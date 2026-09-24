@@ -1,0 +1,10 @@
+.vscode/
+catboost_info/
+.claude/
+.env
+*.key
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+*.tif
+*.tiff

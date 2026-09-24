@@ -1,0 +1,25 @@
+Approche,Variante,Model,N*,RMSE_dev
+A1,Reduced (15),RF,3,5.5479
+A1,Reduced (15),XGBoost,4,5.7483
+A1,Reduced (15),CatBoost,3,5.5843
+A1,Reduced (15),LightGBM,9,5.465
+A2,Reduced (15),RF,3,5.6233
+A2,Reduced (15),XGBoost,5,5.6979
+A2,Reduced (15),CatBoost,5,5.558
+A2,Reduced (15),LightGBM,5,5.7337
+A1,Strict (14),RF,3,5.5479
+A1,Strict (14),XGBoost,4,5.7483
+A1,Strict (14),CatBoost,3,5.5843
+A1,Strict (14),LightGBM,9,5.465
+A2,Strict (14),RF,3,5.6233
+A2,Strict (14),XGBoost,5,5.6979
+A2,Strict (14),CatBoost,5,5.558
+A2,Strict (14),LightGBM,5,5.7337
+A1,Full (19),RF,3,5.5479
+A1,Full (19),XGBoost,4,5.7483
+A1,Full (19),CatBoost,3,5.5843
+A1,Full (19),LightGBM,13,5.4842
+A2,Full (19),RF,3,5.6233
+A2,Full (19),XGBoost,5,5.6979
+A2,Full (19),CatBoost,5,5.558
+A2,Full (19),LightGBM,7,5.6798

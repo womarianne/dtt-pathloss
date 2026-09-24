@@ -1,0 +1,5 @@
+Model,RMSE,MAE,R2,Bias
+Hata standard,17.81,13.755,-2.201,13.541
+Hata L1a (global offset),11.569,9.73,-0.351,0.162
+Hata L1b (offset/env),9.932,7.803,0.005,-0.019
+Hata L2 (OLS),6.998,5.368,0.506,-0.103

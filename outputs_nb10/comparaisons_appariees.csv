@@ -1,0 +1,16 @@
+A,B,ΔRMSE,IC_lo,IC_hi,P(A<B),Wilcoxon_p,Groupe,p_Holm,Significatif
+ML LightGBM,Hata L2 (OLS),-2.1222,-3.5728,-0.5941,0.997,0.0647,Primaire,0.3234,non
+ML LightGBM,Mean by city,-2.3141,-3.7068,-0.8638,0.998,0.0147,Primaire,0.0882,non
+Hata L2 (OLS),Mean by city,-0.1919,-0.6393,0.1885,0.828,0.1577,Primaire,0.6309,non
+A1-LightGBM,ML LightGBM,0.0771,-0.5106,0.6635,0.392,0.7818,Primaire,1.0,non
+A2-CatBoost,ML LightGBM,-0.1374,-0.551,0.3049,0.7155,0.8968,Primaire,1.0,non
+A1-LightGBM,A2-CatBoost,0.2144,-0.3898,0.821,0.2505,0.5725,Primaire,1.0,non
+Hata L2 (OLS),Hata L1b,-2.9345,-4.6201,-1.3705,0.9995,0.0037,Primaire,0.0293,oui
+Hata L1b,Hata L1a,-1.6372,-2.8557,-0.361,0.9945,0.0075,Primaire,0.0524,non
+Hata L2 (OLS),ITU-R P.1546-6,-6.6409,-8.2877,-5.0391,1.0,0.0,Primaire,0.0,oui
+ML RF,ML XGBoost,-0.3332,-0.974,0.3025,0.8195,0.5031,Exploratoire,1.0,non
+ML RF,ML CatBoost,-0.0541,-0.3921,0.2985,0.615,0.7764,Exploratoire,1.0,non
+ML RF,ML LightGBM,-0.0998,-0.6473,0.4558,0.6265,0.9637,Exploratoire,1.0,non
+ML XGBoost,ML CatBoost,0.2791,-0.4462,0.9605,0.2395,0.5536,Exploratoire,1.0,non
+ML XGBoost,ML LightGBM,0.2334,-0.7474,1.1791,0.3365,0.6261,Exploratoire,1.0,non
+ML CatBoost,ML LightGBM,-0.0457,-0.486,0.4423,0.563,0.9972,Exploratoire,1.0,non

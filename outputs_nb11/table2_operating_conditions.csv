@@ -1,0 +1,8 @@
+Parameter,Cotonou,Kandi
+Environment,Urban,Suburban
+Number of records (N),211,116
+Transmitter(s) [N],"coto (190), abca (21)",kand (116)
+Carrier frequency f (MHz),570,538
+Tx antenna height (m),abca: 150; coto: 100,kand: 100
+Rx antenna height (m),10,10
+Tx-Rx distance d (km),"[0.16, 6.50]","[2.09, 6.07]"

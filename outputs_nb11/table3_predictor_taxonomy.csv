@@ -1,0 +1,20 @@
+Family,Variable,Unit,Definition
+Baseline,Distance,m,Distance between transmission and reception (Haversine distance).
+Baseline,Freq,MHz,Carrier frequency of the transmitted signal.
+Baseline,Tx_power,W,Effective isotropic radiated power at the transmitter.
+Baseline,Tx_height,m,Height of the transmitter antenna above ground level.
+Baseline,Rx_height,m,Height of the receiver antenna above ground level.
+Terrain,Slope_Tx_Rx_50m,dimensionless,Average slope between the transmission point and the point 50 m after reception along the Tx to Rx direction.
+Terrain,Roughness_Tx_Rx_50m,m,Rugosity (standard deviation of elevations) between the transmitter and the point 50 m downstream of the receiver along the Tx to Rx direction.
+Geometry,Azimut_Tx_Rx,deg,"Horizontal angle between true north and the Tx-Rx direction, measured clockwise in the range [0 deg, 360 deg)."
+Geometry,Tilt_Tx_Rx,deg,Elevation angle of the Tx-Rx line of sight. Positive: downtilt (receiver below transmitter); negative: uptilt (receiver above transmitter).
+Obstacles,LOS,"{0,1}",Binary indicator of line-of-sight between Tx and Rx.
+Obstacles,First_building_m,m,Distance from Tx to the nearest building intercepting the Tx-Rx ray.
+Obstacles,First_tree_m,m,Distance from Tx to the nearest tree intercepting the Tx-Rx ray.
+Obstacles,Fresnel_buildings,count,Number of buildings whose footprint intersects the first Fresnel ellipsoid of the Tx-Rx link.
+Obstacles,Fresnel_trees,count,Number of trees whose canopy intersects the first Fresnel ellipsoid of the Tx-Rx link.
+Obstacles,Buildings_near_Rx,count,Number of buildings within a fixed radius (50 m) around the receiver.
+Obstacles,Trees_near_Rx,count,Number of trees within a fixed radius (50 m) around the receiver.
+Weather,Temp,C,Ambient air temperature at the measurement time. Retained (with Rhum) for its established link to atmospheric refractivity; Wdir/Wspd/Pres were dropped as they have no established physical role in point-to-area median-field prediction.
+Weather,Rhum,%,Relative humidity at the measurement time; drives the wet term of atmospheric refractivity together with Temp.
+Context,Environment,cat.,Categorical morphology label: urban Cotonou vs. suburban Kandi.

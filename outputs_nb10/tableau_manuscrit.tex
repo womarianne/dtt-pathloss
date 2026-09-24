@@ -1,0 +1,28 @@
+\begin{table}[!t]
+\centering
+\caption{Cross-family comparison on the sealed test subset ($d \geq 1$~km, $n=62$). All models are trained on the same 242 development points. Brackets give 95\% bootstrap percentile confidence intervals (2000 resamples).}
+\label{tab:cross_family}
+\begin{tabular}{llccccc}
+\toprule
+Family & Model & $N$ & RMSE (dB) & MAE (dB) & $R^2$ & Bias (dB) \\
+\midrule
+Uncalibrated empirical & ITU-R P.1546-6 & -- & 13.64 [12.05, 15.15] & 11.73 [10.07, 13.51] & -0.877 [-1.661, -0.410] & -8.87 \\
+ & Hata standard & -- & 17.81 [14.64, 20.70] & 13.76 [11.05, 16.66] & -2.201 [-3.511, -1.306] & +13.54 \\
+\midrule
+Calibrated empirical & Hata L2 (OLS) & 7 & 7.00 [5.58, 8.46] & 5.37 [4.32, 6.59] & 0.506 [0.256, 0.678] & -0.10 \\
+ & Hata L1b & 2 & 9.93 [8.16, 11.71] & 7.80 [6.27, 9.54] & 0.005 [-0.489, 0.340] & -0.02 \\
+ & Hata L1a & 1 & 11.57 [9.77, 13.43] & 9.73 [8.18, 11.39] & -0.351 [-0.868, 0.006] & +0.16 \\
+\midrule
+Pure ML & ML RF & 5 & 4.78 [4.11, 5.45] & 4.02 [3.41, 4.71] & 0.770 [0.663, 0.835] & +0.42 \\
+ & ML CatBoost & 5 & 4.83 [4.10, 5.56] & 4.02 [3.37, 4.76] & 0.765 [0.647, 0.836] & +0.58 \\
+ & ML LightGBM & 5 & 4.88 [4.14, 5.57] & 4.03 [3.40, 4.73] & 0.760 [0.637, 0.834] & +0.30 \\
+ & ML XGBoost & 5 & 5.11 [4.09, 6.10] & 4.02 [3.22, 4.90] & 0.737 [0.588, 0.838] & +0.55 \\
+\midrule
+Hybrid A1 & A1-LightGBM & 13 & 4.95 [4.26, 5.62] & 4.14 [3.48, 4.82] & 0.753 [0.632, 0.827] & +0.11 \\
+\midrule
+Hybrid A2 & A2-CatBoost & 5 & 4.74 [4.02, 5.46] & 3.99 [3.38, 4.70] & 0.773 [0.661, 0.843] & +0.48 \\
+\midrule
+Trivial baseline & Mean by city & -- & 7.19 [5.91, 8.52] & 5.74 [4.70, 6.90] & 0.478 [0.237, 0.644] & -0.34 \\
+\bottomrule
+\end{tabular}
+\end{table}

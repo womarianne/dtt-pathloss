@@ -1,0 +1,9 @@
+model,config,RMSE,MAE,R2,Bias
+RF,"nb07 : N=4, sans augmentation",4.846,4.064,0.76,0.427
+RF,"retenu : N=5, ×0, aucun",4.675,3.96,0.777,0.534
+XGBoost,"nb07 : N=5, sans augmentation",4.96,4.018,0.749,0.704
+XGBoost,"retenu : N=6, ×0, aucun",4.857,3.944,0.759,0.703
+CatBoost,"nb07 : N=4, sans augmentation",5.195,4.311,0.724,0.634
+CatBoost,"retenu : N=5, ×0, aucun",4.817,4.076,0.763,0.721
+LightGBM,"nb07 : N=5, sans augmentation",4.884,3.966,0.756,0.628
+LightGBM,"retenu : N=5, ×0, aucun",4.884,3.966,0.756,0.628
