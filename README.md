@@ -77,14 +77,14 @@ The test set is read only once, in notebook 10. Section 7 of notebooks 07 and 08
 
 **The L2 regression is not identifiable.** `statsmodels` raises `SingularMatrixWarning: The design matrix is rank-deficient`. Seven columns for an effective rank of 5, condition number 7e16: `a_hm` is strictly constant (`Rx_antenna_height` = 10 m everywhere) and `log_f`, `log_erp`, `Environment` take only two values, determined by the city. The Ê_L2 predictions remain valid, so the reported RMSE holds; the **coefficient values** are not interpretable and should not be discussed as re-estimated propagation exponents. Alternative: reparameterize on `log_d`, `log_hb·log_d`, `Environment`, and the constant.
 
-**The headline number.** The model selected by validation is CatBoost (5.211 dB in Dev), which gives **4.89 dB [4.07, 5.69]** on the test set. A selection made on the test set would have picked XGBoost instead, at 4.39 dB — 0.50 dB of optimism from selection alone. The Dev and test rankings even differ (Dev: CatBoost, LightGBM, XGBoost, RF; test: XGBoost, LightGBM, CatBoost, RF).
+**The headline number.** The model selected by Dev validation is LightGBM, which gives **4.88 dB [4.14, 5.57]** on the test set. Test-based selection would instead pick RF, at 4.78 dB [4.11, 5.45] — a modest but real illustration of selection optimism (~0.10 dB here). The best hybrid, A2-CatBoost, gives 4.74 dB [4.02, 5.46] — numerically ahead of every pure-ML model but not distinguishably so (see below).
 
-**Statistically established** (Holm-corrected, within the main comparisons, p < 0.05): ML beats the "mean by city" baseline by 2.30 dB; L2 beats L1b by 2.93 dB; L1b beats L1a by 1.64 dB; L2 beats ITU-R by 6.64 dB.
+**Statistically established** (Holm-corrected, within the main comparisons, p < 0.05): calibrated Hata L2 beats L1b by 2.93 dB (p_Holm = 0.029); L2 beats ITU-R P.1546-6 by 6.64 dB (p_Holm < 0.0001). That is the full list — fewer claims hold up than in earlier iterations of this pipeline.
 
-**Borderline case to discuss**: ML CatBoost vs. Hata L2, ΔRMSE = -2.11 dB, bootstrap CI [-3.40, -0.77] excluding zero and P(A<B) = 0.998, but Wilcoxon+Holm at p = 0.095. Report both readings.
+**Not established, despite a favorable point estimate**: ML (LightGBM) vs. Hata L2 — ΔRMSE = -2.12 dB, bootstrap CI [-3.57, -0.59] excluding zero and P(A<B) = 0.997, but Wilcoxon+Holm at p = 0.323. ML vs. the "mean by city" baseline is similarly suggestive but non-significant (ΔRMSE = -2.31 dB, p_Holm = 0.088), as is L1b vs. L1a (ΔRMSE = -1.64 dB, p_Holm = 0.052, the closest miss). Report the point estimate and the p-value together, not the point estimate alone.
 
-**Not established**: the ranking among the four regressors — no pair reaches significance. Hybridization adds nothing measurable either: A1-CatBoost is -0.08 dB from pure ML, CI [-0.57, +0.40]. Phrase it as "hybridization matches pure ML," never "A1 is the best model."
+**Not established**: the ranking among the four regressors — no pair reaches significance. Hybridization adds nothing measurable either: A2-CatBoost vs. ML LightGBM is -0.14 dB, CI [-0.55, +0.30]. Phrase it as "hybridization matches pure ML," never "the hybrid is the best model."
 
 **Augmentation** not repeated here: the original notebook 06 had already established that the CTGAN gain was not reproducible once the seed was fixed.
 
-*Note: the "Open items" section above documents an earlier iteration of this pipeline (22-feature era); the headline figures have not been refreshed against the current 19-feature results and should be treated as historical notes for the writeup, not as current numbers.*
+*Figures above reflect the current 19-feature pipeline (Wdir, Wspd, and Pres dropped from the weather predictors; Temp and Rhum retained for their link to atmospheric refractivity) and the latest full re-run of notebooks 07-11.*
