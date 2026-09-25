@@ -1,89 +1,90 @@
-# Pipeline sans fuite de données — DTT path loss, Bénin
+# Leak-free pipeline — DTT path loss, Benin
 
-Dossier autonome. Décompresser, ouvrir dans VSCode, tout tourne sans rien déplacer : les notebooks, les données et les dossiers de sorties sont au même niveau, et c'est ce que les chemins relatifs attendent.
+Self-contained folder. Unzip, open in VS Code, everything runs without moving anything: notebooks, data, and output folders sit at the same level, matching what the relative paths expect.
 
-## Démarrage
+## Getting started
 
 ```bash
 cd dtt-pathloss-leakfree
 python -m venv .venv
-source .venv/bin/activate          # Windows : .venv\Scripts\activate
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 code .
 ```
 
-Dans VSCode, ouvrir un notebook et sélectionner l'interpréteur `.venv` en haut à droite. Les extensions Python et Jupyter sont suggérées automatiquement. Les sorties de tous les notebooks sont déjà présentes : rien n'a besoin d'être réexécuté pour lire les résultats.
+In VS Code, open a notebook and select the `.venv` interpreter in the top right. The Python and Jupyter extensions are suggested automatically. Outputs for every notebook are already present: nothing needs to be re-run to read the results.
 
-Python 3.11. Les versions de `requirements.txt` sont celles qui ont produit ces résultats.
+Python 3.11. The versions pinned in `requirements.txt` are the ones that produced these results.
 
-## Ordre d'exécution
+## Execution order
 
-Chaque notebook consomme les sorties du précédent, l'ordre est strict.
+Each notebook consumes the previous one's outputs; the order is strict.
 
-| # | Notebook | Rôle | Durée | Écrit dans |
+| # | Notebook | Role | Duration | Writes to |
 |---|---|---|---|---|
-| 12 | `12_outlier_analysis_radio_features.ipynb` | Détection des outliers, seuil Z<1.8 | ~3 min | `outputs/` |
-| 07 | `07_leakfree_pipeline.ipynb` | Split Dev/Test, Optuna, importance out-of-fold, Borda, ablation, N\* | **~23 min** | `outputs_nb07/` |
-| 08 | `08_hata_hybrides_leakfree.ipynb` | Hata L1a/L1b/L2, ITU-R, hybrides A1/A2 avec ablation N=1..22 | ~10 min | `outputs_nb08/` |
-| 09 | `09_hybridation_separation_roles.ipynb` | Ablation sur trois espaces de features pour les hybrides | ~15 min | `outputs_nb09/` |
-| 10 | `10_comparaison_standard.ipynb` | Entraînement commun, IC bootstrap, tests appariés, tableau LaTeX | ~1 min | `outputs_nb10/` |
+| 07 | `07_leakfree_pipeline.ipynb` | Dev/Test split, Optuna, out-of-fold importance, Borda, ablation, N\* | **~23 min** | `outputs_nb07/` |
+| 08 | `08_hata_hybrides_leakfree.ipynb` | Hata L1a/L1b/L2, ITU-R, hybrids A1/A2 with N=1..19 ablation | ~10 min | `outputs_nb08/` |
+| 09 | `09_hybridation_separation_roles.ipynb` | Ablation over three feature spaces for the hybrids | ~15 min | `outputs_nb09/` |
+| 10 | `10_comparaison_standard.ipynb` | Common training, bootstrap CI, paired tests, LaTeX table | ~1 min | `outputs_nb10/` |
 
-Le 12 régénère `radio_features_clean_ref.csv`, déjà fourni : on peut démarrer au 07. Le 10 se réexécute seul en une minute à partir de `outputs_nb07/` et `outputs_nb08/`.
+`radio_features_clean_ref.csv` is already provided: start directly at 07. Notebook 10 reruns on its own in about a minute from `outputs_nb07/` and `outputs_nb08/`.
 
-`_build/` contient les scripts qui ont généré les notebooks — pour la traçabilité, ils ne sont pas nécessaires à l'exécution.
+`_build/` contains the scripts that generated the notebooks — kept for traceability, not needed to run them.
 
-## Données
+## Data
 
-- `radio_features.csv` — export brut, 353 lignes × 47 colonnes.
-- `radio_features_clean_ref.csv` — **entrée du pipeline**. 327 mesures, les 22 prédicteurs, la cible `E_field`, plus `Ref`, `Tx_antenna_height`, `Rx_antenna_height` comme métadonnées.
+- `radio_features.csv` — raw export, 353 rows x 47 columns.
+- `radio_features_clean_ref.csv` — **pipeline input**. 327 measurements, the 19 predictors, the `E_field` target, plus `Ref`, `Tx_antenna_height`, `Rx_antenna_height` as metadata.
 
-Écarts avec le dataset de l'article : 327 mesures au lieu de 338 (outliers retirés au seuil Z<1.8) et `Prcp` écartée des prédicteurs, quasi-constante (349 zéros, 4 valeurs à 0.4 mm).
+Differences from the article's dataset: 327 measurements instead of 338, and `Prcp` dropped from the predictors as near-constant (349 zeros, 4 values at 0.4 mm).
 
-## Correspondance avec le manuscrit
+## Manuscript correspondence
 
-| Élément | Fichier |
+| Item | File |
 |---|---|
-| Tableau comparaison inter-familles (LaTeX booktabs) | `outputs_nb10/tableau_manuscrit.tex` |
-| Le même en CSV | `outputs_nb10/tableau_manuscrit_IC.csv` |
-| Figure comparaison avec barres d'erreur | `outputs_nb10/fig_cross_family_IC.pdf` |
-| Tests appariés entre modèles | `outputs_nb10/comparaisons_appariees.csv` |
-| Toutes les métriques avec IC | `outputs_nb10/resultats_avec_IC.csv` |
-| Classement de Borda | `outputs_nb07/fig_borda_rank_dev.pdf` |
-| Importances par modèle | `outputs_nb07/fig_perm_importance_dev.pdf` |
-| Ablation du core-set | `outputs_nb07/fig_core_set_ablation_dev.pdf` |
-| Choix de N\* (ML pur) | `outputs_nb07/nstar_selection_dev.csv` |
-| Ablation des hybrides A1/A2 | `outputs_nb08/hybrid_A{1,2}_ablation_dev.csv`, `fig_ablation_hybrides_dev.pdf` |
-| Choix de N\* (hybrides) | `outputs_nb08/nstar_hybrides_dev.csv` |
-| Quantification de la fuite, ML pur | `outputs_nb07/comparaison_protocoles.csv` |
-| Quantification de la fuite, hybrides | `outputs_nb08/comparaison_protocoles_hybrides.csv` |
-| Hyperparamètres retenus | `outputs_nb07/best_params_dev.json` |
+| Cross-family comparison table (LaTeX booktabs) | `outputs_nb10/tableau_manuscrit.tex` |
+| Same table in CSV | `outputs_nb10/tableau_manuscrit_IC.csv` |
+| Comparison figure with error bars | `outputs_nb10/fig_cross_family_IC.pdf` |
+| Paired tests between models | `outputs_nb10/comparaisons_appariees.csv` |
+| All metrics with confidence intervals | `outputs_nb10/resultats_avec_IC.csv` |
+| Borda ranking | `outputs_nb07/fig_borda_rank_dev.pdf` |
+| Per-model importances | `outputs_nb07/fig_perm_importance_dev.pdf` |
+| Core-set ablation | `outputs_nb07/fig_core_set_ablation_dev.pdf` |
+| N\* choice (pure ML) | `outputs_nb07/nstar_selection_dev.csv` |
+| A1/A2 hybrid ablation | `outputs_nb08/hybrid_A{1,2}_ablation_dev.csv`, `fig_ablation_hybrides_dev.pdf` |
+| N\* choice (hybrids) | `outputs_nb08/nstar_hybrides_dev.csv` |
+| Leakage quantification, pure ML | `outputs_nb07/comparaison_protocoles.csv` |
+| Leakage quantification, hybrids | `outputs_nb08/comparaison_protocoles_hybrides.csv` |
+| Retained hyperparameters | `outputs_nb07/best_params_dev.json` |
 
-## Protocole
+## Protocol
 
-Split **80/20 stratifié par `Environment`, `random_state=42`** : Dev 261, Test 66. Vérifié : 64.53 % d'urbain au global, 64.37 % dans Dev, 65.15 % dans le Test. Le filtre physique `Distance ≥ 1000 m` requis par Hata et P.1546-6 est appliqué séparément aux deux partitions : Dev 242, Test 62.
+80/20 split, **stratified by `Environment`, `random_state=42`**: Dev 261, Test 66. Verified: 64.53% urban overall, 64.37% in Dev, 65.15% in Test. The physical filter `Distance >= 1000 m` required by Hata and P.1546-6 is applied separately to both partitions: Dev 242, Test 62.
 
-Toutes les décisions sont prises **dans Dev** :
+All decisions are made **within Dev**:
 
-- **Hyperparamètres** — Optuna TPE, 150 essais par modèle, RMSE moyen sur trois hold-out stratifiés tirés dans Dev (seeds 42, 123, 456). Déjà le protocole de l'article.
-- **Importance des features** — permutation à 30 répétitions, **out-of-fold** sur 5 plis de Dev, moyennée. L'article la calculait sur le test.
-- **Ordre de Borda** — somme des rangs des quatre régresseurs sur ces importances.
-- **N\*** — ablation cumulative en validation croisée répétée dans Dev (5 plis × 2 répétitions), puis **règle du plateau à 1 erreur type**. L'article prenait l'`argmin` du RMSE de test.
-- **Calibration Hata** — L1a, L1b, L2 estimées sur Dev filtré. Déjà propre dans l'article.
-- **Ê_L2 dans l'ablation hybride** — réajusté par OLS dans chaque pli.
-- **Modèle représentatif de chaque famille** — désigné par son RMSE de validation dans Dev.
+- **Hyperparameters** — Optuna TPE, 150 trials per model, mean RMSE over three stratified hold-outs drawn within Dev (seeds 42, 123, 456). Already the article's protocol.
+- **Feature importance** — permutation with 30 repeats, **out-of-fold** over 5 Dev folds, averaged. The article computed it on the test set.
+- **Borda order** — sum of ranks across the four regressors on these importances.
+- **N\*** — cumulative ablation via repeated cross-validation within Dev (5 folds x 2 repeats), then the **1-standard-error plateau rule**. The article used the test-RMSE argmin.
+- **Hata calibration** — L1a, L1b, L2 estimated on filtered Dev. Already clean in the article.
+- **Ê_L2 in the hybrid ablation** — refit by OLS within each fold.
+- **Representative model per family** — chosen by its Dev validation RMSE.
 
-Le test n'est lu qu'une fois, au notebook 10. Les §7 des notebooks 07 et 08 rejouent délibérément l'ancien protocole sur le test, uniquement pour chiffrer la fuite ; rien n'en ressort qui alimente le pipeline.
+The test set is read only once, in notebook 10. Section 7 of notebooks 07 and 08 deliberately replays the old protocol on the test set, solely to quantify the leakage; nothing from it feeds the pipeline.
 
-## Points à traiter dans la rédaction
+## Open items for the writeup
 
-**La régression L2 n'est pas identifiable.** `statsmodels` émet `SingularMatrixWarning: The design matrix is rank-deficient`. Sept colonnes pour un rang effectif de 5, conditionnement 7·10¹⁶ : `a_hm` est strictement constante (`Rx_antenna_height` = 10 m partout) et `log_f`, `log_erp`, `Environment` ne prennent que deux valeurs déterminées par la ville. Les prédictions Ê_L2 restent valides, donc le RMSE de 7.00 dB tient ; les **valeurs des coefficients** ne sont pas interprétables et ne doivent pas être commentées comme des exposants de propagation ré-estimés. Alternative : re-paramétrer sur `log_d`, `log_hb·log_d`, `Environment` et la constante.
+**The L2 regression is not identifiable.** `statsmodels` raises `SingularMatrixWarning: The design matrix is rank-deficient`. Seven columns for an effective rank of 5, condition number 7e16: `a_hm` is strictly constant (`Rx_antenna_height` = 10 m everywhere) and `log_f`, `log_erp`, `Environment` take only two values, determined by the city. The Ê_L2 predictions remain valid, so the reported RMSE holds; the **coefficient values** are not interpretable and should not be discussed as re-estimated propagation exponents. Alternative: reparameterize on `log_d`, `log_hb·log_d`, `Environment`, and the constant.
 
-**Le chiffre principal.** Le modèle désigné en validation est CatBoost (5.211 dB dans Dev), qui donne **4.89 dB [4.07, 5.69]** sur le test. Une désignation faite sur le test aurait retenu XGBoost et affiché 4.39 dB — 0.50 dB d'optimisme dû à la seule sélection. Les classements Dev et test sont d'ailleurs différents (Dev : CatBoost, LightGBM, XGBoost, RF ; test : XGBoost, LightGBM, CatBoost, RF).
+**The headline number.** The model selected by validation is CatBoost (5.211 dB in Dev), which gives **4.89 dB [4.07, 5.69]** on the test set. A selection made on the test set would have picked XGBoost instead, at 4.39 dB — 0.50 dB of optimism from selection alone. The Dev and test rankings even differ (Dev: CatBoost, LightGBM, XGBoost, RF; test: XGBoost, LightGBM, CatBoost, RF).
 
-**Établi statistiquement** (Holm au sein des comparaisons principales, p < 0.05) : le ML bat la référence « moyenne par ville » de 2.30 dB ; L2 bat L1b de 2.93 dB ; L1b bat L1a de 1.64 dB ; L2 bat ITU-R de 6.64 dB.
+**Statistically established** (Holm-corrected, within the main comparisons, p < 0.05): ML beats the "mean by city" baseline by 2.30 dB; L2 beats L1b by 2.93 dB; L1b beats L1a by 1.64 dB; L2 beats ITU-R by 6.64 dB.
 
-**Cas limite à discuter** : ML CatBoost vs Hata L2, ΔRMSE = −2.11 dB, IC bootstrap [−3.40, −0.77] qui exclut zéro et P(A<B) = 0.998, mais Wilcoxon+Holm à p = 0.095. Rapporter les deux lectures.
+**Borderline case to discuss**: ML CatBoost vs. Hata L2, ΔRMSE = -2.11 dB, bootstrap CI [-3.40, -0.77] excluding zero and P(A<B) = 0.998, but Wilcoxon+Holm at p = 0.095. Report both readings.
 
-**Non établi** : le classement entre les quatre régresseurs — aucune paire significative. Et l'hybridation n'apporte rien : A1-CatBoost est à −0.08 dB du ML pur, IC [−0.57, +0.40]. Formuler « l'hybridation égale le ML pur », jamais « A1 est le meilleur modèle ».
+**Not established**: the ranking among the four regressors — no pair reaches significance. Hybridization adds nothing measurable either: A1-CatBoost is -0.08 dB from pure ML, CI [-0.57, +0.40]. Phrase it as "hybridization matches pure ML," never "A1 is the best model."
 
-**Augmentation** non reprise : le notebook 06 d'origine avait établi que le gain CTGAN n'était pas reproductible une fois la graine fixée.
+**Augmentation** not repeated here: the original notebook 06 had already established that the CTGAN gain was not reproducible once the seed was fixed.
+
+*Note: the "Open items" section above documents an earlier iteration of this pipeline (22-feature era); the headline figures have not been refreshed against the current 19-feature results and should be treated as historical notes for the writeup, not as current numbers.*
