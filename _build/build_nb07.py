@@ -16,7 +16,7 @@ def code(text):
 # =============================================================================
 md("""# 07 — Pipeline sans fuite de données : Dev / Test
 
-**Cible :** `E_field` (dBµV/m) · **Dataset :** `radio_features_clean_ref.csv` — 327 mesures nettoyées (seuil Z<1.8), 22 prédicteurs
+**Cible :** `E_field` (dBµV/m) · **Dataset :** `radio_features_clean_ref.csv` — 327 mesures, 19 prédicteurs
 
 ---
 
@@ -121,11 +121,11 @@ FEAT_GROUPS = {
     'Obstacles': ['LOS', 'First_building_m', 'First_tree_m',
                   'Fresnel_buildings', 'Fresnel_trees',
                   'Buildings_near_Rx', 'Trees_near_Rx'],
-    'Meteo':     ['Temp', 'Rhum', 'Wdir', 'Wspd', 'Pres'],
+    'Weather':     ['Temp', 'Rhum'],
     'Context':   ['Environment'],
 }
 ALL_FEATURES = [f for feats in FEAT_GROUPS.values() for f in feats]
-assert len(ALL_FEATURES) == 22
+assert len(ALL_FEATURES) == 19
 
 print(f'Dataset : {len(df)} mesures × {len(ALL_FEATURES)} features')
 print(f'Cible   : {TARGET} — moy={df[TARGET].mean():.1f}  std={df[TARGET].std():.2f} dBµV/m')
@@ -286,11 +286,11 @@ code("""ABLATION_GROUPS = {
     'Obstacles': ['LOS', 'First_building_m', 'First_tree_m',
                   'Fresnel_buildings', 'Fresnel_trees',
                   'Buildings_near_Rx', 'Trees_near_Rx'],
-    'Meteo':     ['Temp', 'Rhum', 'Wdir', 'Wspd', 'Pres'],
+    'Weather':     ['Temp', 'Rhum'],
     'Context':   ['Environment'],
 }
 GROUP_COLORS = {'Baseline': '#4C6B8A', 'Terrain': '#7B5EA7', 'Geometry': '#3A7D8C',
-                'Obstacles': '#8C5A3C', 'Meteo': '#4A8C5C', 'Context': '#8C7A3A'}
+                'Obstacles': '#8C5A3C', 'Weather': '#4A8C5C', 'Context': '#8C7A3A'}
 IMP_FEATS   = [f for feats in ABLATION_GROUPS.values() for f in feats]
 feat_to_grp = {f: g for g, feats in ABLATION_GROUPS.items() for f in feats}
 FEAT_IDX    = [ALL_FEATURES.index(f) for f in IMP_FEATS]
@@ -338,12 +338,12 @@ for name in IMP_MODELS:
     imp_multi[f'Perm_{name}'] = imp_folds[name].mean(axis=0)
 
 print()
-print('RMSE out-of-fold dans Dev (référence interne, 22 features) :')
+print('RMSE out-of-fold dans Dev (référence interne, 19 features) :')
 for name in IMP_MODELS:
     print(f'  {name:10s} {np.mean(oof_rmse[name]):.3f} ± {np.std(oof_rmse[name]):.3f} dB')""")
 
 code("""# ── Agrégation de Borda — identique au notebook 02 ───────────────────────────
-# rang 1 = plus important ; Borda_score = somme des rangs (max = 4×22 = 88)
+# rang 1 = plus important ; Borda_score = somme des rangs (max = 4×19 = 76)
 rank_map = {'Perm_RF': 'Rank_RF', 'Perm_XGBoost': 'Rank_XGB',
             'Perm_CatBoost': 'Rank_CAT', 'Perm_LightGBM': 'Rank_LGB'}
 rank_cols = []
@@ -372,7 +372,7 @@ for rank in sorted(imp_multi['Borda_rank'].unique()):
         g = [f for f in TIE_BREAK_ORDER if f in g] + [f for f in g if f not in TIE_BREAK_ORDER]
     BORDA_ORDER.extend(g)
 
-assert len(BORDA_ORDER) == 22 and set(BORDA_ORDER) == set(IMP_FEATS)
+assert len(BORDA_ORDER) == 19 and set(BORDA_ORDER) == set(IMP_FEATS)
 print('Ordre de Borda (Dev, out-of-fold) :')
 for i, f in enumerate(BORDA_ORDER, 1):
     print(f'  {i:2d}. {f:22s} [{feat_to_grp[f]}]')""")
@@ -415,7 +415,7 @@ ax.barh(range(len(order)), [imp_multi.loc[f, 'Borda_score'] for f in order],
 ax.set_yticks(range(len(order)))
 ax.set_yticklabels([f'{int(imp_multi.loc[f, "Borda_rank"]):2d}  {f}' for f in order], fontsize=9)
 ax.invert_yaxis()
-ax.set_xlabel('Score de Borda (somme des rangs, max = 4×22 = 88)', fontsize=9)
+ax.set_xlabel('Score de Borda (somme des rangs, max = 4×19 = 76)', fontsize=9)
 ax.set_title('Consensus de Borda — importance out-of-fold dans Dev', fontsize=10)
 ax.grid(axis='x', alpha=0.25)
 ax.legend(handles=[Patch(color=c, label=g) for g, c in GROUP_COLORS.items()],
@@ -636,7 +636,7 @@ for rank in sorted(imp_leak['Borda_rank'].unique()):
     BORDA_LEAK.extend(g)
 
 rows_leak = []
-for n in range(1, 23):
+for n in range(1, 20):
     idx = [ALL_FEATURES.index(f) for f in BORDA_LEAK[:n]]
     r = {'N_features': n}
     for mdl in IMP_MODELS:

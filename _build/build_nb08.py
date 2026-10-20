@@ -118,7 +118,7 @@ FEAT_GROUPS = {
     'Obstacles': ['LOS', 'First_building_m', 'First_tree_m',
                   'Fresnel_buildings', 'Fresnel_trees',
                   'Buildings_near_Rx', 'Trees_near_Rx'],
-    'Meteo':     ['Temp', 'Rhum', 'Wdir', 'Wspd', 'Pres'],
+    'Weather':     ['Temp', 'Rhum'],
     'Context':   ['Environment'],
 }
 ALL_FEATURES = [f for feats in FEAT_GROUPS.values() for f in feats]
@@ -289,7 +289,7 @@ print(f'ITU-R P.1546-6 calculé sur le test filtré (n={len(test_f)}) — aucun 
 md("""---
 ## §5 — Hybrides A1 / A2 : ablation et choix de N\\* **dans Dev**
 
-C'est ici que se trouve la correction. Dans le notebook 04, l'ablation N=1..22 était évaluée sur le test et N\\* pris à l'`argmin`. Ici elle est évaluée en validation croisée répétée dans Dev filtré.
+C'est ici que se trouve la correction. Dans le notebook 04, l'ablation N=1..19 était évaluée sur le test et N\\* pris à l'`argmin`. Ici elle est évaluée en validation croisée répétée dans Dev filtré.
 
 Deux précautions :
 - **Ê_L2 est réajusté dans chaque pli** (OLS sur le pli d'entraînement seul). Sinon les points de validation auraient contribué à leur propre prédiction Hata calibrée.
@@ -304,7 +304,7 @@ n_est = len(folds)
 print(f'Ablation hybride — {n_est} estimations par point, dans Dev filtré (n={len(dev_f)})')
 
 rows_a1, rows_a2 = [], []
-for n in range(1, 23):
+for n in range(1, 20):
     feats = BORDA_ORDER[:n]
     r1 = {'N': n}; r2_ = {'N': n}
     acc1 = {m: [] for m in ML_NAMES}; acc2 = {m: [] for m in ML_NAMES}
@@ -491,7 +491,7 @@ md("""---
 L'ancien protocole (ablation A1/A2 évaluée sur le test, N\\* = `argmin`) est rejoué sur les mêmes données et le même split. L'écart isole l'effet du protocole.""")
 
 code("""rows_leak = []
-for n in range(1, 23):
+for n in range(1, 20):
     feats = BORDA_ORDER[:n]
     r = {'N': n}
     for mdl in ML_NAMES:

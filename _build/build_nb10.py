@@ -102,7 +102,7 @@ FEAT_GROUPS = {
     'Geometry':  ['Azimut_Tx_Rx', 'Tilt_Tx_Rx'],
     'Obstacles': ['LOS', 'First_building_m', 'First_tree_m', 'Fresnel_buildings',
                   'Fresnel_trees', 'Buildings_near_Rx', 'Trees_near_Rx'],
-    'Meteo':     ['Temp', 'Rhum', 'Wdir', 'Wspd', 'Pres'],
+    'Weather':     ['Temp', 'Rhum'],
     'Context':   ['Environment'],
 }
 ALL_FEATURES = [f for feats in FEAT_GROUPS.values() for f in feats]

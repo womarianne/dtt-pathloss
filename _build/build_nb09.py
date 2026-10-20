@@ -20,7 +20,7 @@ Au notebook 08, les hybrides A1 et A2 n'apportent aucun gain sur le ML pur (A1-X
 ## Le principe de l'hybridation
 La division du travail voulue est : le modèle physique porte la dépendance en distance, fréquence et hauteur d'antenne ; le ML corrige ce que la formule ne sait pas représenter — relief, encombrement, météo. Si on redonne au ML les covariables de Hata, cette séparation n'est plus imposée.
 
-## Covariables de Hata présentes dans l'espace des 22 features
+## Covariables de Hata présentes dans l'espace des 19 features
 Okumura-Hata prend en entrée `Freq`, `Distance`, la hauteur d'antenne d'émission, la hauteur d'antenne de réception et l'ERP, plus le commutateur urbain/suburbain. Leurs analogues dans le jeu de features sont :
 
 | Entrée de Hata | Feature correspondante | Sort ? |
@@ -33,9 +33,9 @@ Okumura-Hata prend en entrée `Freq`, `Distance`, la hauteur d'antenne d'émissi
 | h_m | — | **non** : `Rx_antenna_height` = 10 m partout, donc `a_hm` est constante et Hata n'utilise aucune information de hauteur de réception variable. `Rx_height` (altitude absolue du récepteur) est une variable de **relief**, pas une entrée de Hata : elle reste. |
 
 ## Trois variantes comparées
-- **Complète** — les 22 features (protocole du notebook 08, repris pour référence)
-- **Réduite** — sans `Distance`, `Freq`, `Tx_power`, `Tx_height` (4 retirées, 18 restantes) ; `Environment` conservée car elle porte aussi de l'encombrement au-delà de son usage dans Hata
-- **Stricte** — sans ces 4 plus `Environment` (5 retirées, 17 restantes)
+- **Complète** — les 19 features (protocole du notebook 08, repris pour référence)
+- **Réduite** — sans `Distance`, `Freq`, `Tx_power`, `Tx_height` (4 retirées, 15 restantes) ; `Environment` conservée car elle porte aussi de l'encombrement au-delà de son usage dans Hata
+- **Stricte** — sans ces 4 plus `Environment` (5 retirées, 14 restantes)
 
 Protocole identique au notebook 08 : ablation en validation croisée répétée **dans Dev**, Ê_L2 réajusté dans chaque pli, N\\* par la règle du plateau à 1 erreur type, **une seule lecture du test** à la fin.
 """)
@@ -135,9 +135,9 @@ code("""HATA_PROPAG = ['Distance', 'Freq', 'Tx_power', 'Tx_height']   # entrées
 HATA_SWITCH = ['Environment']                                  # commutateur urbain/suburbain
 
 VARIANTS = {
-    'Complète (22)': BORDA_ORDER,
-    'Réduite (18)':  [f for f in BORDA_ORDER if f not in HATA_PROPAG],
-    'Stricte (17)':  [f for f in BORDA_ORDER if f not in HATA_PROPAG + HATA_SWITCH],
+    'Full (19)': BORDA_ORDER,
+    'Reduced (15)':  [f for f in BORDA_ORDER if f not in HATA_PROPAG],
+    'Strict (14)':  [f for f in BORDA_ORDER if f not in HATA_PROPAG + HATA_SWITCH],
 }
 for k, v in VARIANTS.items():
     print(f'{k:16s} {len(v):2d} features')
@@ -193,7 +193,7 @@ def ablation(order, approach):
     return pd.DataFrame(rows)
 
 ABL = {}
-for vname in ['Réduite (18)', 'Stricte (17)']:
+for vname in ['Reduced (15)', 'Strict (14)']:
     for approach in ['A1', 'A2']:
         key = f'{approach} · {vname}'
         print(f'--- {key} ---')
@@ -202,8 +202,8 @@ for vname in ['Réduite (18)', 'Stricte (17)']:
         print('   meilleur RMSE Dev : ' + '  '.join(f'{m}={v:.3f}' for m, v in best.items()))
 
 # variantes complètes : déjà calculées au notebook 08
-ABL['A1 · Complète (22)'] = pd.read_csv(NB08 / 'hybrid_A1_ablation_dev.csv')
-ABL['A2 · Complète (22)'] = pd.read_csv(NB08 / 'hybrid_A2_ablation_dev.csv')
+ABL['A1 · Full (19)'] = pd.read_csv(NB08 / 'hybrid_A1_ablation_dev.csv')
+ABL['A2 · Full (19)'] = pd.read_csv(NB08 / 'hybrid_A2_ablation_dev.csv')
 for k, v in ABL.items():
     v.to_csv(OUT / f'ablation_{k.replace(" · ", "_").replace(" ", "").replace("(", "").replace(")", "")}.csv', index=False)
 print('\\nAblations sauvées → outputs_nb09/')""")
@@ -263,9 +263,9 @@ print(f'=== Test scellé (d≥1 km, n={len(test_f)}) — hybrides selon l espace
 print(res.to_string(index=False))
 print()
 pv = res.pivot_table(index=['Approche', 'Modèle'], columns='Variante', values='RMSE')
-pv = pv[['Complète (22)', 'Réduite (18)', 'Stricte (17)']]
-pv['Δ Réduite'] = (pv['Réduite (18)'] - pv['Complète (22)']).round(3)
-pv['Δ Stricte'] = (pv['Stricte (17)'] - pv['Complète (22)']).round(3)
+pv = pv[['Full (19)', 'Reduced (15)', 'Strict (14)']]
+pv['Δ Réduite'] = (pv['Reduced (15)'] - pv['Full (19)']).round(3)
+pv['Δ Stricte'] = (pv['Strict (14)'] - pv['Full (19)']).round(3)
 print('=== RMSE sur le test, par variante (Δ négatif = le retrait aide) ===')
 print(pv.round(3).to_string())""")
 
@@ -280,7 +280,7 @@ print(f'  Hata L2 seul          : RMSE = {l2_rmse:.3f} dB')
 print(f'  Meilleur ML pur       : {best_pure["Modèle"]} (N={best_pure["N"]}) '
       f'RMSE = {best_pure["RMSE"]:.3f} dB   R² = {best_pure["R2"]:.3f}')
 print()
-for v in ['Complète (22)', 'Réduite (18)', 'Stricte (17)']:
+for v in ['Full (19)', 'Reduced (15)', 'Strict (14)']:
     b = res[res['Variante'] == v].sort_values('RMSE').iloc[0]
     print(f'  Meilleur hybride {v:14s} : {b["Approche"]}-{b["Modèle"]} (N*={b["N*"]}) '
           f'RMSE = {b["RMSE"]:.3f} dB   R² = {b["R2"]:.3f}   '
@@ -288,7 +288,7 @@ for v in ['Complète (22)', 'Réduite (18)', 'Stricte (17)']:
 
 code("""# ── Figure : effet du retrait des covariables de Hata ───────────────────────
 fig, axes = plt.subplots(1, 2, figsize=(15, 5.5), sharey=True)
-VAR_ORDER = ['Complète (22)', 'Réduite (18)', 'Stricte (17)']
+VAR_ORDER = ['Full (19)', 'Reduced (15)', 'Strict (14)']
 COLS = {'RF': '#1565C0', 'XGBoost': '#2E7D32', 'CatBoost': '#E65100', 'LightGBM': '#6A1B9A'}
 x = np.arange(len(VAR_ORDER)); w = 0.2
 

@@ -34,9 +34,9 @@ Each notebook consumes the previous one's outputs; the order is strict.
 ## Data
 
 - `radio_features.csv` — raw export, 353 rows x 47 columns.
-- `radio_features_clean_ref.csv` — **pipeline input**. 327 measurements, the 19 predictors, the `E_field` target, plus `Ref`, `Tx_antenna_height`, `Rx_antenna_height` as metadata.
+- `radio_features_clean_ref.csv` — **pipeline input**. 327 measurements (selection: `_build/build_notebook.py`), 22 predictor columns of which 19 are used by the pipeline (`Wdir`, `Wspd` and `Pres` are dropped), the `E_field` target, plus `Ref`, `Tx_antenna_height`, `Rx_antenna_height` as metadata.
 
-Differences from the article's dataset: 327 measurements instead of 338, and `Prcp` dropped from the predictors as near-constant (349 zeros, 4 values at 0.4 mm).
+`Prcp` is dropped from the predictors as near-constant (349 zeros, 4 values at 0.4 mm).
 
 ## Manuscript correspondence
 
@@ -53,8 +53,8 @@ Differences from the article's dataset: 327 measurements instead of 338, and `Pr
 | N\* choice (pure ML) | `outputs_nb07/nstar_selection_dev.csv` |
 | A1/A2 hybrid ablation | `outputs_nb08/hybrid_A{1,2}_ablation_dev.csv`, `fig_ablation_hybrides_dev.pdf` |
 | N\* choice (hybrids) | `outputs_nb08/nstar_hybrides_dev.csv` |
-| Leakage quantification, pure ML | `outputs_nb07/comparaison_protocoles.csv` |
-| Leakage quantification, hybrids | `outputs_nb08/comparaison_protocoles_hybrides.csv` |
+| Diagnostic: selection on the test set, pure ML | `outputs_nb07/comparaison_protocoles.csv` |
+| Diagnostic: selection on the test set, hybrids | `outputs_nb08/comparaison_protocoles_hybrides.csv` |
 | Retained hyperparameters | `outputs_nb07/best_params_dev.json` |
 
 ## Protocol
@@ -63,23 +63,23 @@ Differences from the article's dataset: 327 measurements instead of 338, and `Pr
 
 All decisions are made **within Dev**:
 
-- **Hyperparameters** — Optuna TPE, 150 trials per model, mean RMSE over three stratified hold-outs drawn within Dev (seeds 42, 123, 456). Already the article's protocol.
-- **Feature importance** — permutation with 30 repeats, **out-of-fold** over 5 Dev folds, averaged. The article computed it on the test set.
+- **Hyperparameters** — Optuna TPE, 150 trials per model, mean RMSE over three stratified hold-outs drawn within Dev (seeds 42, 123, 456).
+- **Feature importance** — permutation with 30 repeats, **out-of-fold** over 5 Dev folds, averaged.
 - **Borda order** — sum of ranks across the four regressors on these importances.
-- **N\*** — cumulative ablation via repeated cross-validation within Dev (5 folds x 2 repeats), then the **1-standard-error plateau rule**. The article used the test-RMSE argmin.
-- **Hata calibration** — L1a, L1b, L2 estimated on filtered Dev. Already clean in the article.
+- **N\*** — cumulative ablation via repeated cross-validation within Dev (5 folds x 2 repeats), then the **1-standard-error plateau rule**.
+- **Hata calibration** — L1a, L1b, L2 estimated on filtered Dev.
 - **Ê_L2 in the hybrid ablation** — refit by OLS within each fold.
 - **Representative model per family** — chosen by its Dev validation RMSE.
 
-The test set is read only once, in notebook 10. Section 7 of notebooks 07 and 08 deliberately replays the old protocol on the test set, solely to quantify the leakage; nothing from it feeds the pipeline.
+The test set is read only once, in notebook 10. Section 7 of notebooks 07 and 08 measures, as a diagnostic, the effect of a selection made on the test set; nothing from it feeds the pipeline.
 
 ## Open items for the writeup
 
 **The L2 regression is not identifiable.** `statsmodels` raises `SingularMatrixWarning: The design matrix is rank-deficient`. Seven columns for an effective rank of 5, condition number 7e16: `a_hm` is strictly constant (`Rx_antenna_height` = 10 m everywhere) and `log_f`, `log_erp`, `Environment` take only two values, determined by the city. The Ê_L2 predictions remain valid, so the reported RMSE holds; the **coefficient values** are not interpretable and should not be discussed as re-estimated propagation exponents. Alternative: reparameterize on `log_d`, `log_hb·log_d`, `Environment`, and the constant.
 
-**The headline number.** The model selected by Dev validation is LightGBM, which gives **4.88 dB [4.14, 5.57]** on the test set. Test-based selection would instead pick RF, at 4.78 dB [4.11, 5.45] — a modest but real illustration of selection optimism (~0.10 dB here). The best hybrid, A2-CatBoost, gives 4.74 dB [4.02, 5.46] — numerically ahead of every pure-ML model but not distinguishably so (see below).
+**The headline number.** On the filtered test set (d >= 1 km, 62 points), the pure-ML representative, Random Forest, gives **4.78 dB [4.11, 5.45]**, and the hybrid representative, A2-CatBoost, **4.74 dB [4.02, 5.46]**.
 
-**Statistically established** (Holm-corrected, within the main comparisons, p < 0.05): calibrated Hata L2 beats L1b by 2.93 dB (p_Holm = 0.029); L2 beats ITU-R P.1546-6 by 6.64 dB (p_Holm < 0.0001). That is the full list — fewer claims hold up than in earlier iterations of this pipeline.
+**Statistically established** (Holm-corrected, within the main comparisons, p < 0.05): calibrated Hata L2 beats L1b by 2.93 dB (p_Holm = 0.029); L2 beats ITU-R P.1546-6 by 6.64 dB (p_Holm < 0.0001). That is the full list.
 
 **Not established, despite a favorable point estimate**: ML (LightGBM) vs. Hata L2 — ΔRMSE = -2.12 dB, bootstrap CI [-3.57, -0.59] excluding zero and P(A<B) = 0.997, but Wilcoxon+Holm at p = 0.323. ML vs. the "mean by city" baseline is similarly suggestive but non-significant (ΔRMSE = -2.31 dB, p_Holm = 0.088), as is L1b vs. L1a (ΔRMSE = -1.64 dB, p_Holm = 0.052, the closest miss). Report the point estimate and the p-value together, not the point estimate alone.
 
