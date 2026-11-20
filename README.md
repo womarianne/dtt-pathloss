@@ -5,7 +5,7 @@ Self-contained folder. Unzip, open in VS Code, everything runs without moving an
 ## Getting started
 
 ```bash
-cd dtt-pathloss-leakfree
+cd dtt-pathloss
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
